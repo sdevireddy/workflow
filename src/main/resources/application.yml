@@ -1,0 +1,185 @@
+spring:
+  application:
+    name: workflow-serivce
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/${app.schema.common:crm_common3}?createDatabaseIfNotExist=true&serverTimezone=UTC&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 300000        # 5 min
+      max-lifetime: 1200000       # 20 min
+      connection-timeout: 30000   # 30 sec
+      validation-timeout: 5000
+      leak-detection-threshold: 60000
+      connection-test-query: SELECT 1
+      pool-name: CommonHikariPool
+    common:
+      #jdbc-url: jdbc:mysql://yamabiko.proxy.rlwy.net:44564/${app.schema.common:crm_common2}?createDatabaseIfNotExist=true&serverTimezone=UTC&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8
+      #username: root
+      #password: YyxopuQjjUCDTsZQpEmZZtVuJACEmqJm
+      jdbc-url: jdbc:mysql://localhost:3306/${app.schema.common:crm_common3}?createDatabaseIfNotExist=true&serverTimezone=UTC&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8
+      username: root
+      password: password
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 2
+        idle-timeout: 300000        # 5 min
+        max-lifetime: 1200000       # 20 min
+        connection-timeout: 30000   # 30 sec
+        validation-timeout: 5000
+        leak-detection-threshold: 60000
+        connection-test-query: SELECT 1
+        pool-name: CommonHikariPool
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+      dialect: org.hibernate.dialect.MySQLDialect
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/common
+    baseline-on-migrate: true
+    validate-on-migrate: false
+
+
+
+  cloud:
+    discovery:
+      enabled: true
+
+  # Email Configuration for Development
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+    test-connection: false
+
+  web:
+    resources:
+      add-mappings: false
+
+  mvc:
+    throw-exception-if-no-handler-found: true
+
+tenant:
+  datasource:
+    #url-prefix: jdbc:mysql://yamabiko.proxy.rlwy.net:44564
+    #username: root
+    #password: YyxopuQjjUCDTsZQpEmZZtVuJACEmqJm
+    url-prefix: jdbc:mysql://localhost:3306
+    username: root
+    password: password
+
+app:
+  schema:
+    common: ${COMMON_SCHEMA_NAME:crm_common3}
+    tenant-prefix: ${TENANT_SCHEMA_PREFIX:}
+  frontend:
+    url: ${FRONTEND_URL:http://localhost:5173}
+  email:
+    from-email: ${EMAIL_FROM:noreply@company.com}
+    from-name: ${EMAIL_FROM_NAME:Your Company Dev}
+  invitation:
+    expiry-days: ${INVITATION_EXPIRY_DAYS:7}
+  password-reset:
+    expiry-hours: ${PASSWORD_RESET_EXPIRY_HOURS:24}
+
+server:
+  port: 8081
+  address: 0.0.0.0
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8767/eureka
+  instance:
+    hostname: localhost
+    instance-id: localhost:auth-service:8081
+    prefer-ip-address: false
+
+jwt:
+  secret: G9MzZjTz2Mm89rL1RL9Jb9vP0rf4pKukwH3XzOvQduE=
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    metrics:
+      enabled: true
+  health:
+    circuitbreakers:
+      enabled: true
+
+resilience4j:
+  retry:
+    instances:
+      retry-api:
+        max-attempts: 3
+        wait-duration: 1s
+    metrics:
+      legacy:
+        enabled: true
+      enabled: true
+
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+    instances:
+      circuit-breaker-service:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 5s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-size: 10
+        sliding-window-type: count_based
+
+logging:
+  level:
+    root: INFO
+    com.zen.auth: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web.servlet.DispatcherServlet: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: DEBUG
+    org.springframework.cloud.netflix.eureka: DEBUG
+    org.flywaydb: DEBUG
+    org.flywaydb.core.internal.command.DbMigrate: DEBUG
+    org.flywaydb.core.internal.sqlscript: DEBUG
+    org.springframework.transaction: DEBUG
+    org.springframework.orm.jpa: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+  file:
+    name: logs/authservice-debug.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%X{requestId}] [%X{sessionId}] %-5level %logger{36} - %msg%n"
