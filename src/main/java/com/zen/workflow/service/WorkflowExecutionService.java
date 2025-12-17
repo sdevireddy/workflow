@@ -166,7 +166,7 @@ public class WorkflowExecutionService {
         dto.setEntityType(execution.getEntityType());
         dto.setEntityId(execution.getEntityId());
         dto.setStatus(execution.getStatus());
-        dto.setCurrentNodeId(execution.getCurrentNodeId());
+        dto.setCurrentNodeId(execution.getCurrentNodeId() != null ? execution.getCurrentNodeId().toString() : null);
         
         try {
             Map<String, Object> context = objectMapper.readValue(execution.getContextData(), Map.class);
@@ -180,5 +180,62 @@ public class WorkflowExecutionService {
         dto.setDurationMs(execution.getDurationMs());
         
         return dto;
+    }
+    
+    public List<WorkflowExecutionDTO> getExecutionsByWorkflowAndStatus(Long workflowId, String status) {
+        return executionRepository.findByWorkflowIdAndStatus(workflowId, status).stream()
+            .map(this::toDTO)
+            .collect(Collectors.toList());
+    }
+    
+    public List<WorkflowExecutionDTO> getExecutionsByTenant(String tenantId) {
+        // In production, filter by tenant - for now return all
+        return executionRepository.findAll().stream()
+            .map(this::toDTO)
+            .collect(Collectors.toList());
+    }
+    
+    public List<WorkflowExecutionDTO> getExecutionsByStatus(String status) {
+        return executionRepository.findByStatus(status).stream()
+            .map(this::toDTO)
+            .collect(Collectors.toList());
+    }
+    
+    public WorkflowExecutionDTO pauseExecution(Long executionId) {
+        WorkflowExecution execution = executionRepository.findById(executionId)
+            .orElseThrow(() -> new RuntimeException("Execution not found"));
+        execution.setStatus("PAUSED");
+        executionRepository.save(execution);
+        logExecution(executionId, "INFO", "Workflow execution paused");
+        return toDTO(execution);
+    }
+    
+    public WorkflowExecutionDTO resumeExecution(Long executionId) {
+        WorkflowExecution execution = executionRepository.findById(executionId)
+            .orElseThrow(() -> new RuntimeException("Execution not found"));
+        execution.setStatus("RUNNING");
+        executionRepository.save(execution);
+        logExecution(executionId, "INFO", "Workflow execution resumed");
+        return toDTO(execution);
+    }
+    
+    public List<WorkflowExecutionDTO> getExecutionHistory(Long workflowId, int page, int size) {
+        return executionRepository.findByWorkflowId(workflowId).stream()
+            .skip((long) page * size)
+            .limit(size)
+            .map(this::toDTO)
+            .collect(Collectors.toList());
+    }
+    
+    public Map<String, Object> getExecutionStats(Long workflowId, String period) {
+        Map<String, Object> stats = new HashMap<>();
+        List<WorkflowExecution> executions = executionRepository.findByWorkflowId(workflowId);
+        
+        stats.put("total", executions.size());
+        stats.put("completed", executions.stream().filter(e -> "COMPLETED".equals(e.getStatus())).count());
+        stats.put("failed", executions.stream().filter(e -> "FAILED".equals(e.getStatus())).count());
+        stats.put("running", executions.stream().filter(e -> "RUNNING".equals(e.getStatus())).count());
+        
+        return stats;
     }
 }

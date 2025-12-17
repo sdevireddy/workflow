@@ -14,6 +14,7 @@ public class ExecutionContext {
     private Map<String, Object> variables = new HashMap<>();
     private List<Map<String, Object>> executedNodes = new ArrayList<>();
     private Map<String, Object> metadata = new HashMap<>();
+    private Map<String, Object> triggerData = new HashMap<>();
     
     public void setVariable(String key, Object value) {
         variables.put(key, value);
@@ -25,5 +26,13 @@ public class ExecutionContext {
     
     public boolean hasVariable(String key) {
         return variables.containsKey(key);
+    }
+    
+    public Map<String, Object> getTriggerData() {
+        return triggerData;
+    }
+    
+    public void setTriggerData(Map<String, Object> triggerData) {
+        this.triggerData = triggerData;
     }
 }

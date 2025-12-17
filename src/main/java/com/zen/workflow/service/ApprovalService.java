@@ -322,4 +322,46 @@ public class ApprovalService {
     public boolean isApprovalServiceAvailable() {
         return approvalEnabled;
     }
+    
+    /**
+     * Get pending approvals for workflow execution
+     */
+    public List<Map<String, Object>> getPendingApprovals(Long workflowExecutionId) {
+        try {
+            // In production, query from database
+            return new ArrayList<>();
+        } catch (Exception e) {
+            log.error("Failed to get pending approvals for execution", e);
+            return new ArrayList<>();
+        }
+    }
+    
+    /**
+     * Get approval by ID
+     */
+    public Map<String, Object> getApproval(Long approvalId) {
+        try {
+            // In production, query from database
+            Map<String, Object> approval = new HashMap<>();
+            approval.put("id", approvalId);
+            approval.put("status", "PENDING");
+            return approval;
+        } catch (Exception e) {
+            log.error("Failed to get approval", e);
+            return new HashMap<>();
+        }
+    }
+    
+    /**
+     * Get execution approvals
+     */
+    public List<Map<String, Object>> getExecutionApprovals(Long workflowExecutionId) {
+        try {
+            // In production, query from database
+            return new ArrayList<>();
+        } catch (Exception e) {
+            log.error("Failed to get execution approvals", e);
+            return new ArrayList<>();
+        }
+    }
 }

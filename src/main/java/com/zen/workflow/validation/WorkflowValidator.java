@@ -957,7 +957,7 @@ public class WorkflowValidator {
 
     private boolean isValidPhoneOrVariable(String phone) {
         // Check if it's a variable or valid phone
-        if (phone.contains("{{") && email.contains("}}")) {
+        if (phone.contains("{{") && phone.contains("}}")) {
             return true; // Variable
         }
         return phone.matches("^\\+?[1-9]\\d{1,14}$");

@@ -40,7 +40,7 @@ public class IntegrationController {
             } else if (tenantId != null) {
                 integrations = integrationService.getIntegrationsByTenant(tenantId);
             } else {
-                integrations = integrationService.getAllIntegrations();
+                integrations = integrationService.getAllIntegrations(tenantId);
             }
             
             return ResponseEntity.ok(integrations);
@@ -71,10 +71,12 @@ public class IntegrationController {
      * POST /api/workflows/integrations
      */
     @PostMapping
-    public ResponseEntity<IntegrationDTO> createIntegration(@RequestBody IntegrationDTO dto) {
-        log.info("Creating integration: {}", dto.getIntegrationName());
+    public ResponseEntity<IntegrationDTO> createIntegration(
+            @RequestBody IntegrationDTO dto,
+            @RequestHeader(value = "X-Tenant-ID", required = false) String tenantId) {
+        log.info("Creating integration: {}", dto.getName());
         try {
-            IntegrationDTO created = integrationService.createIntegration(dto);
+            IntegrationDTO created = integrationService.createIntegration(dto, tenantId);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (Exception e) {
             log.error("Failed to create integration", e);
@@ -89,10 +91,11 @@ public class IntegrationController {
     @PutMapping("/{id}")
     public ResponseEntity<IntegrationDTO> updateIntegration(
             @PathVariable Long id,
-            @RequestBody IntegrationDTO dto) {
+            @RequestBody IntegrationDTO dto,
+            @RequestHeader(value = "X-Tenant-ID", required = false) String tenantId) {
         log.info("Updating integration: {}", id);
         try {
-            IntegrationDTO updated = integrationService.updateIntegration(id, dto);
+            IntegrationDTO updated = integrationService.updateIntegration(id, dto, tenantId);
             return ResponseEntity.ok(updated);
         } catch (Exception e) {
             log.error("Failed to update integration", e);
@@ -105,10 +108,12 @@ public class IntegrationController {
      * DELETE /api/workflows/integrations/{id}
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteIntegration(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteIntegration(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-Tenant-ID", required = false) String tenantId) {
         log.info("Deleting integration: {}", id);
         try {
-            integrationService.deleteIntegration(id);
+            integrationService.deleteIntegration(id, tenantId);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             log.error("Failed to delete integration", e);

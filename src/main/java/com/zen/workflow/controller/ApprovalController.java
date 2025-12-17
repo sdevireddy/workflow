@@ -27,11 +27,11 @@ public class ApprovalController {
      * GET /api/workflows/approvals/pending
      */
     @GetMapping("/pending")
-    public ResponseEntity<List<ApprovalDTO>> getPendingApprovals(
+    public ResponseEntity<List<Map<String, Object>>> getPendingApprovals(
             @RequestParam Long userId) {
         log.info("Getting pending approvals for user: {}", userId);
         try {
-            List<ApprovalDTO> approvals = approvalService.getPendingApprovals(userId);
+            List<Map<String, Object>> approvals = approvalService.getPendingApprovals(userId);
             return ResponseEntity.ok(approvals);
         } catch (Exception e) {
             log.error("Failed to get pending approvals", e);
@@ -44,10 +44,10 @@ public class ApprovalController {
      * GET /api/workflows/approvals/{id}
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ApprovalDTO> getApproval(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> getApproval(@PathVariable Long id) {
         log.info("Getting approval: {}", id);
         try {
-            ApprovalDTO approval = approvalService.getApproval(id);
+            Map<String, Object> approval = approvalService.getApproval(id);
             return ResponseEntity.ok(approval);
         } catch (Exception e) {
             log.error("Failed to get approval", e);
@@ -60,7 +60,7 @@ public class ApprovalController {
      * POST /api/workflows/approvals/{id}/approve
      */
     @PostMapping("/{id}/approve")
-    public ResponseEntity<ApprovalDTO> approveWorkflow(
+    public ResponseEntity<Map<String, Object>> approveWorkflow(
             @PathVariable Long id,
             @RequestBody Map<String, Object> approvalData) {
         log.info("Approving workflow approval: {}", id);
@@ -68,7 +68,7 @@ public class ApprovalController {
             Long userId = ((Number) approvalData.get("userId")).longValue();
             String comments = (String) approvalData.get("comments");
             
-            ApprovalDTO approved = approvalService.approve(id, userId, comments);
+            Map<String, Object> approved = approvalService.approve(id, userId, comments);
             return ResponseEntity.ok(approved);
         } catch (Exception e) {
             log.error("Failed to approve workflow", e);
@@ -81,7 +81,7 @@ public class ApprovalController {
      * POST /api/workflows/approvals/{id}/reject
      */
     @PostMapping("/{id}/reject")
-    public ResponseEntity<ApprovalDTO> rejectWorkflow(
+    public ResponseEntity<Map<String, Object>> rejectWorkflow(
             @PathVariable Long id,
             @RequestBody Map<String, Object> rejectionData) {
         log.info("Rejecting workflow approval: {}", id);
@@ -89,7 +89,7 @@ public class ApprovalController {
             Long userId = ((Number) rejectionData.get("userId")).longValue();
             String reason = (String) rejectionData.get("reason");
             
-            ApprovalDTO rejected = approvalService.reject(id, userId, reason);
+            Map<String, Object> rejected = approvalService.reject(id, userId, reason);
             return ResponseEntity.ok(rejected);
         } catch (Exception e) {
             log.error("Failed to reject workflow", e);
@@ -102,11 +102,11 @@ public class ApprovalController {
      * GET /api/workflows/executions/{executionId}/approvals
      */
     @GetMapping("/executions/{executionId}")
-    public ResponseEntity<List<ApprovalDTO>> getExecutionApprovals(
+    public ResponseEntity<List<Map<String, Object>>> getExecutionApprovals(
             @PathVariable Long executionId) {
         log.info("Getting approvals for execution: {}", executionId);
         try {
-            List<ApprovalDTO> approvals = approvalService.getExecutionApprovals(executionId);
+            List<Map<String, Object>> approvals = approvalService.getExecutionApprovals(executionId);
             return ResponseEntity.ok(approvals);
         } catch (Exception e) {
             log.error("Failed to get execution approvals", e);

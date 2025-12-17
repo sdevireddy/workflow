@@ -158,14 +158,25 @@ public class WorkflowController {
      * POST /api/workflows/{id}/execute
      */
     @PostMapping("/{id}/execute")
-    public ResponseEntity<WorkflowExecutionDTO> executeWorkflow(
+    public ResponseEntity<Map<String, Object>> executeWorkflow(
             @PathVariable Long id,
             @RequestBody Map<String, Object> triggerData,
             @RequestHeader(value = "X-Tenant-ID", required = false) String tenantId) {
         log.info("Executing workflow: {} for tenant: {}", id, tenantId);
         try {
-            WorkflowExecutionDTO execution = executionEngine.executeWorkflow(id, triggerData, tenantId);
-            return ResponseEntity.ok(execution);
+            com.zen.workflow.model.ExecutionContext context = new com.zen.workflow.model.ExecutionContext();
+            context.setWorkflowId(id);
+            context.setTenantId(tenantId);
+            context.setTriggerData(triggerData);
+            
+            com.zen.workflow.model.ExecutionResult result = executionEngine.executeWorkflow(id, context);
+            
+            Map<String, Object> response = new java.util.HashMap<>();
+            response.put("success", result.isSuccess());
+            response.put("status", result.getStatus());
+            response.put("output", result.getOutput());
+            
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             log.error("Failed to execute workflow", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

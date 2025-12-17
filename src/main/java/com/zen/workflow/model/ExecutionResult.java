@@ -38,4 +38,12 @@ public class ExecutionResult {
         result.setSuccess(true);
         return result;
     }
+    
+    public static ExecutionResult paused(String reason) {
+        ExecutionResult result = new ExecutionResult();
+        result.setStatus("PAUSED");
+        result.setSuccess(true);
+        result.setOutput(Map.of("reason", reason));
+        return result;
+    }
 }

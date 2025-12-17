@@ -11,9 +11,7 @@ public interface WorkflowExecutionRepository extends JpaRepository<WorkflowExecu
     
     List<WorkflowExecution> findByWorkflowId(Long workflowId);
     
-    List<WorkflowExecution> findByTenantId(String tenantId);
+    List<WorkflowExecution> findByStatus(String status);
     
-    List<WorkflowExecution> findByExecutionStatus(String status);
-    
-    List<WorkflowExecution> findByWorkflowIdAndExecutionStatus(Long workflowId, String status);
+    List<WorkflowExecution> findByWorkflowIdAndStatus(Long workflowId, String status);
 }

@@ -141,4 +141,40 @@ public class WorkflowService {
         
         return dto;
     }
+    
+    public WorkflowDTO cloneWorkflow(Long id, String newName) {
+        Workflow original = workflowRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Workflow not found"));
+        
+        Workflow clone = new Workflow();
+        clone.setWorkflowName(newName);
+        clone.setWorkflowKey(original.getWorkflowKey() + "_clone");
+        clone.setDescription(original.getDescription());
+        clone.setModuleType(original.getModuleType());
+        clone.setTriggerType(original.getTriggerType());
+        clone.setWorkflowConfig(original.getWorkflowConfig());
+        clone.setIsActive(false);
+        clone.setVersion(1);
+        clone.setCreatedBy(original.getCreatedBy());
+        clone.setCreatedAt(LocalDateTime.now());
+        clone.setUpdatedAt(LocalDateTime.now());
+        
+        Workflow saved = workflowRepository.save(clone);
+        return toDTO(saved);
+    }
+    
+    public Map<String, Object> getWorkflowStats(Long id) {
+        Workflow workflow = workflowRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Workflow not found"));
+        
+        Map<String, Object> stats = new java.util.HashMap<>();
+        stats.put("workflowId", id);
+        stats.put("name", workflow.getWorkflowName());
+        stats.put("isActive", workflow.getIsActive());
+        stats.put("version", workflow.getVersion());
+        stats.put("totalExecutions", 0);
+        stats.put("successRate", 0.0);
+        
+        return stats;
+    }
 }

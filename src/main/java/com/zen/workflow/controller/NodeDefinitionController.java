@@ -72,10 +72,10 @@ public class NodeDefinitionController {
      * GET /api/workflows/node-definitions/categories
      */
     @GetMapping("/categories")
-    public ResponseEntity<List<Map<String, Object>>> getNodeCategories() {
+    public ResponseEntity<List<String>> getNodeCategories() {
         log.info("Getting node categories");
         try {
-            List<Map<String, Object>> categories = nodeDefinitionService.getNodeCategories();
+            List<String> categories = nodeDefinitionService.getNodeCategories();
             return ResponseEntity.ok(categories);
         } catch (Exception e) {
             log.error("Failed to get node categories", e);

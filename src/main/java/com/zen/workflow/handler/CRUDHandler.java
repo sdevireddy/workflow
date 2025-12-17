@@ -4,11 +4,13 @@ import com.zen.workflow.engine.VariableResolver;
 import com.zen.workflow.model.ExecutionContext;
 import com.zen.workflow.model.ExecutionResult;
 import com.zen.workflow.model.NodeConfig;
+import com.zen.workflow.service.DynamicEntityService;
 import com.zen.workflow.service.LeadAssignmentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -473,7 +475,7 @@ public class CRUDHandler implements NodeHandler {
         
         return ExecutionResult.success(result);
     }
-}
+
 
     
     /**
@@ -520,3 +522,4 @@ public class CRUDHandler implements NodeHandler {
         }
     }
 }
+

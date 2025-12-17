@@ -13,6 +13,9 @@ public interface WorkflowRepository extends JpaRepository<Workflow, Long> {
     List<Workflow> findByIsActive(Boolean isActive);
     List<Workflow> findByModuleType(String moduleType);
     
+    // Method needed by WorkflowTriggerService
+    List<Workflow> findByModuleTypeAndTriggerTypeAndIsActiveTrue(String moduleType, String triggerType);
+    
     @Query("SELECT w FROM Workflow w WHERE w.moduleType = ?1 AND w.isActive = true")
     List<Workflow> findActiveWorkflowsByModule(String moduleType);
 }

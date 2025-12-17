@@ -77,10 +77,10 @@ public class WorkflowExecutionController {
      * GET /api/workflows/executions/{id}/logs
      */
     @GetMapping("/{id}/logs")
-    public ResponseEntity<List<Map<String, Object>>> getExecutionLogs(@PathVariable Long id) {
+    public ResponseEntity<List<com.zen.entities.tenant.WorkflowExecutionLog>> getExecutionLogs(@PathVariable Long id) {
         log.info("Getting execution logs: {}", id);
         try {
-            List<Map<String, Object>> logs = executionService.getExecutionLogs(id);
+            List<com.zen.entities.tenant.WorkflowExecutionLog> logs = executionService.getExecutionLogs(id);
             return ResponseEntity.ok(logs);
         } catch (Exception e) {
             log.error("Failed to get execution logs", e);
@@ -125,11 +125,11 @@ public class WorkflowExecutionController {
      * POST /api/workflows/executions/{id}/cancel
      */
     @PostMapping("/{id}/cancel")
-    public ResponseEntity<WorkflowExecutionDTO> cancelExecution(@PathVariable Long id) {
+    public ResponseEntity<Void> cancelExecution(@PathVariable Long id) {
         log.info("Cancelling execution: {}", id);
         try {
-            WorkflowExecutionDTO cancelled = executionService.cancelExecution(id);
-            return ResponseEntity.ok(cancelled);
+            executionService.cancelExecution(id);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             log.error("Failed to cancel execution", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

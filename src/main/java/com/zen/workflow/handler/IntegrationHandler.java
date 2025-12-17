@@ -115,60 +115,6 @@ public class IntegrationHandler implements NodeHandler {
         String functionName = (String) nodeConfig.get("functionName");
         Map<String, Object> parameters = (Map<String, Object>) nodeConfig.get("parameters");
         
-        log.info("Executing custom function: {}", functionName);
-        
-        // TODO: Execute custom function
-        
-        Map<String, Object> output = new HashMap<>();
-        output.put("functionExecuted", true);
-        output.put("functionName", functionName);
-        output.put("result", "Success");
-        
-        return ExecutionResult.success(output);
-    }
-
-    private ExecutionResult handleCallSubflow(NodeConfig config, ExecutionContext context) {
-        Map<String, Object> nodeConfig = config.getConfig();
-        
-        Long subflowId = ((Number) nodeConfig.get("subflowId")).longValue();
-        Map<String, Object> inputVariables = (Map<String, Object>) nodeConfig.get("inputVariables");
-        
-        log.info("Calling sub-workflow: {}", subflowId);
-        
-        // TODO: Execute sub-workflow
-        
-        Map<String, Object> output = new HashMap<>();
-        output.put("subflowExecuted", true);
-        output.put("subflowId", subflowId);
-        
-        return ExecutionResult.success(output);
-    }
-
-    private ExecutionResult handleExternalService(NodeConfig config, ExecutionContext context) {
-        Map<String, Object> nodeConfig = config.getConfig();
-        
-        String serviceName = (String) nodeConfig.get("serviceName");
-        String action = (String) nodeConfig.get("action");
-        
-        log.info("Calling external service: {} - {}", serviceName, action);
-        
-        // TODO: Integrate with external service
-        
-        Map<String, Object> output = new HashMap<>();
-        output.put("serviceCalled", true);
-        output.put("serviceName", serviceName);
-        
-        return ExecutionResult.success(output);
-    }
-}
-
-    
-    private ExecutionResult handleCustomFunction(NodeConfig config, ExecutionContext context) {
-        Map<String, Object> nodeConfig = config.getConfig();
-        
-        String functionName = (String) nodeConfig.get("functionName");
-        Map<String, Object> parameters = (Map<String, Object>) nodeConfig.get("parameters");
-        
         if (parameters != null) {
             parameters = variableResolver.resolveMap(parameters, context);
         } else {

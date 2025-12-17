@@ -1,0 +1,461 @@
+{
+  "info": {
+    "name": "Workflow API - Complete Collection",
+    "description": "Complete API collection for Workflow Management System with all 93 elements",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "tenantId",
+      "value": "tenant_123",
+      "type": "string"
+    },
+    {
+      "key": "workflowId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "executionId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Workflow Management",
+      "item": [
+        {
+          "name": "Create Workflow",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/workflows",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workflowName\": \"Lead Nurturing Campaign\",\n  \"workflowKey\": \"lead_nurture_v1\",\n  \"description\": \"Automated lead nurturing workflow\",\n  \"moduleType\": \"LEAD\",\n  \"triggerType\": \"RECORD_CREATE\",\n  \"isActive\": true,\n  \"workflowConfig\": {\n    \"nodes\": [\n      {\n        \"id\": \"node_1\",\n        \"type\": \"trigger\",\n        \"subtype\": \"record_created\",\n        \"label\": \"Lead Created\",\n        \"config\": {},\n        \"connections\": { \"next\": \"node_2\" }\n      },\n      {\n        \"id\": \"node_2\",\n        \"type\": \"communication\",\n        \"subtype\": \"send_email\",\n        \"label\": \"Send Welcome Email\",\n        \"config\": {\n          \"to\": \"{{lead.email}}\",\n          \"subject\": \"Welcome!\",\n          \"body\": \"Hello {{lead.firstName}}\"\n        },\n        \"connections\": { \"next\": null }\n      }\n    ]\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Workflows",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows"
+          }
+        },
+        {
+          "name": "Get Workflow by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/{{workflowId}}"
+          }
+        },
+        {
+          "name": "Update Workflow",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/workflows/{{workflowId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workflowName\": \"Updated Workflow Name\",\n  \"description\": \"Updated description\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Workflow",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/workflows/{{workflowId}}"
+          }
+        },
+        {
+          "name": "Activate Workflow",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/workflows/{{workflowId}}/activate"
+          }
+        },
+        {
+          "name": "Deactivate Workflow",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/workflows/{{workflowId}}/deactivate"
+          }
+        },
+        {
+          "name": "Execute Workflow",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-ID",
+                "value": "{{tenantId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/workflows/{{workflowId}}/execute",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lead\": {\n    \"id\": 456,\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email\": \"john@example.com\",\n    \"score\": 75,\n    \"source\": \"Website\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Test Workflow",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/workflows/{{workflowId}}/test",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"testData\": {\n    \"lead\": {\n      \"email\": \"test@example.com\"\n    }\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Validate Workflow",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/workflows/{{workflowId}}/validate"
+          }
+        },
+        {
+          "name": "Clone Workflow",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/workflows/{{workflowId}}/clone",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Copy of Lead Nurturing\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Workflow Stats",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/{{workflowId}}/stats"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Workflow Execution",
+      "item": [
+        {
+          "name": "Get All Executions",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/executions"
+          }
+        },
+        {
+          "name": "Get Executions by Workflow",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/executions?workflowId={{workflowId}}"
+          }
+        },
+        {
+          "name": "Get Executions by Status",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/executions?status=RUNNING"
+          }
+        },
+        {
+          "name": "Get Execution by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/executions/{{executionId}}"
+          }
+        },
+        {
+          "name": "Get Execution Logs",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/executions/{{executionId}}/logs"
+          }
+        },
+        {
+          "name": "Pause Execution",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/workflows/executions/{{executionId}}/pause"
+          }
+        },
+        {
+          "name": "Resume Execution",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/workflows/executions/{{executionId}}/resume"
+          }
+        },
+        {
+          "name": "Cancel Execution",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/workflows/executions/{{executionId}}/cancel"
+          }
+        },
+        {
+          "name": "Retry Execution",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/workflows/executions/{{executionId}}/retry"
+          }
+        },
+        {
+          "name": "Get Execution History",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/{{workflowId}}/history?page=0&size=20"
+          }
+        },
+        {
+          "name": "Get Execution Stats",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/executions/stats?workflowId={{workflowId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Node Definitions (93 Elements)",
+      "item": [
+        {
+          "name": "Get All Node Definitions",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/node-definitions"
+          }
+        },
+        {
+          "name": "Get Triggers",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/node-definitions?nodeType=trigger"
+          }
+        },
+        {
+          "name": "Get Conditions",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/node-definitions?nodeType=condition"
+          }
+        },
+        {
+          "name": "Get Data Operations",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/node-definitions?nodeType=data"
+          }
+        },
+        {
+          "name": "Get Communication",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/node-definitions?nodeType=communication"
+          }
+        },
+        {
+          "name": "Get Node by Type and Subtype",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/node-definitions/communication/send_email"
+          }
+        },
+        {
+          "name": "Get Node Categories",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/node-definitions/categories"
+          }
+        },
+        {
+          "name": "Get Node Types",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/node-definitions/types"
+          }
+        },
+        {
+          "name": "Get Config Schema",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/node-definitions/communication/send_email/schema"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Integrations",
+      "item": [
+        {
+          "name": "Get All Integrations",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/integrations"
+          }
+        },
+        {
+          "name": "Get Integration by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/integrations/1"
+          }
+        },
+        {
+          "name": "Create Integration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/workflows/integrations",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"integrationKey\": \"slack_webhook\",\n  \"integrationName\": \"Slack Notifications\",\n  \"integrationType\": \"WEBHOOK\",\n  \"endpointUrl\": \"https://hooks.slack.com/services/YOUR/WEBHOOK/URL\",\n  \"httpMethod\": \"POST\",\n  \"isActive\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Integration",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/workflows/integrations/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"integrationName\": \"Updated Slack Integration\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Integration",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/workflows/integrations/1"
+          }
+        },
+        {
+          "name": "Test Integration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/workflows/integrations/1/test",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"testMessage\": \"Hello from workflow!\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Approvals",
+      "item": [
+        {
+          "name": "Get Pending Approvals",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/approvals/pending?userId=123"
+          }
+        },
+        {
+          "name": "Get Approval by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/approvals/1"
+          }
+        },
+        {
+          "name": "Approve Workflow",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/workflows/approvals/1/approve",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 123,\n  \"comments\": \"Approved - looks good!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Reject Workflow",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/workflows/approvals/1/reject",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 123,\n  \"reason\": \"Needs more details\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Execution Approvals",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/workflows/executions/{{executionId}}/approvals"
+          }
+        }
+      ]
+    }
+  ]
+}
